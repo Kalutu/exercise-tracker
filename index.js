@@ -86,5 +86,42 @@ app.post('/api/users/:_id/exercises', bodyParser.urlencoded({ extended: false })
   
 });
 
+app.get('/api/users/:_id/logs', function(req, res){
+  let userId = req.params._id;
+  User.findById(userId, function(error, data){
+    if(!error){
+      let responseObject = data;
+
+      if(req.query.from || req.query.to){
+        let fromDate = new Date(0);
+        let toDate =new Date();
+
+        if(req.query.from){
+           fromDate = new Date(req.query.from);
+        }
+
+        if(req.query.to){
+           toDate = new Date(req.query.to);
+        }
+        
+        fromDate = fromDate.getTime();
+        toDate =  toDate.getTime();
+
+        responseObject.log = responseObject.log.filter((session)=>{
+          let sessionDate = new Date(session.date).getTime();
+
+          return sessionDate >= fromDate && sessionDate <= toDate
+        })
+      }
+
+      if(req.query.limit){
+        responseObject.log = responseObject.log.slice(0, req.query.limit)
+      }
+      
+      responseObject['count'] = data.log.length;
+      res.json(responseObject);
+    }
+  })
+});
 
 
