@@ -57,3 +57,5 @@ The API provides the following endpoints:
   ```http
   GET /api/users/:_id/logs?from=2023-09-01&to=2023-09-10&limit=5
 
+## Contributing
+Contributions to this project are welcome. If you find any issues or have suggestions for improvements, please open an issue or submit a pull request.
