@@ -52,3 +52,39 @@ app.get('/api/users', function(req, res){
     }
   });
 });
+
+app.post('/api/users/:_id/exercises', bodyParser.urlencoded({ extended: false }), function(req, res) {
+
+   let newSession = new Session({
+      description: req.body.description,
+      duration: parseInt(req.body.duration),
+      date: req.body.date || new Date().toISOString().substring(0, 10),
+    });
+  
+   let userId = req.params._id;
+
+  // Find the user by ID and Update
+  User.findByIdAndUpdate(
+    userId, 
+    {$push: {log: newSession}},
+    {new: true},
+    function(error, updatedUser) {
+      
+      if(!error){
+        let responseObject = {};
+
+        responseObject['_id'] = updatedUser.id;
+        responseObject['username'] = updatedUser.username;
+        responseObject['date'] = new Date(newSession.date).toDateString();
+        responseObject['description'] = newSession.description;
+        responseObject['duration'] = newSession.duration;
+        
+        res.json(responseObject);
+      }
+      
+    });
+  
+});
+
+
+
