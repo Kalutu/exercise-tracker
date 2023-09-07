@@ -125,6 +125,13 @@ app.get('/api/users/:_id/logs', function(req, res) {
       }
 
       responseObject['count'] = data.log.length;
+
+      responseObject.log = responseObject.log.map((session) => {
+        session = session.toObject(); 
+        session.date = new Date(session.date).toDateString();
+        return session;
+      });
+      
       res.json(responseObject);
     }
   });
